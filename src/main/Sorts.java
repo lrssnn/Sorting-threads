@@ -8,11 +8,11 @@ import java.io.*;
 public class Sorts {
     
     public synchronized void doWork(int[] ary) throws InterruptedException{
-       print(ary);
+        System.out.println(sorted(ary));
         Thread thr = new Thread(new QuickMultiThreadMaster(ary));
         thr.start();
         thr.join();
-        print(ary);
+        //print(ary);
         System.out.println(sorted(ary));
         
     }
@@ -27,7 +27,7 @@ public class Sorts {
     }
     public static synchronized void main(String[] args) throws FileNotFoundException, InterruptedException {
         
-        int[] ary = getRandomArray(10);
+        int[] ary = getRandomArray(50);
         Sorts obj = new Sorts();
         obj.doWork(ary);
         
