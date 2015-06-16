@@ -4,13 +4,13 @@ import static main.Sorts.print;
 import static main.Sorts.quickSort;
 
 
-public class QuickMultiThreadMaster implements Runnable{
+public class QuickSingleThread implements Runnable{
     
     int[] ary;
     static int numMade = 0;
     int instanceNum;
     
-    public QuickMultiThreadMaster(int[] target){
+    public QuickSingleThread(int[] target){
         ary = target;
         instanceNum = numMade;
         numMade++;

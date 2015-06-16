@@ -10,7 +10,7 @@ public class Sorts {
     public synchronized void doWork(int[] ary, int[] ary2) throws InterruptedException{
         System.out.println("---Working---");
         Thread thr = new Thread(new QuickMultiThreadMaster(ary));
-        Thread thr2 = new Thread(new QuickMultiThreadMaster(ary2));
+        Thread thr2 = new Thread(new QuickSingleThread(ary2));
         thr.start();
         thr2.start();
         thr.join();
@@ -31,8 +31,8 @@ public class Sorts {
     }
     public static synchronized void main(String[] args) throws FileNotFoundException, InterruptedException {
         
-        int[] ary  = getRandomArray(500000);
-        int[] ary2 = getRandomArray(50000000);
+        int[] ary  = getRandomArray(999999);
+        int[] ary2 = getRandomArray(999999);
         Sorts obj  = new Sorts();
         obj.doWork(ary, ary2);
         
