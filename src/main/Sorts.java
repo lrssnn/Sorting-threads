@@ -7,20 +7,6 @@ import java.io.*;
  */
 public class Sorts {
     
-    public synchronized void doWork(int[] ary, int[] ary2) throws InterruptedException{
-        System.out.println("---Working---");
-        Thread thr = new Thread(new QuickMultiThreadMaster(ary));
-        Thread thr2 = new Thread(new QuickSingleThread(ary2));
-        thr.start();
-        thr2.start();
-        thr.join();
-        thr2.join();
-        //print(ary);
-        System.out.println("1:" + sorted(ary));
-        System.out.println("2:" + sorted(ary2));
-        
-    }
-
     public static boolean sorted(int[] ary){
         for(int i = 0; i < ary.length-1; i++){
             if(ary[i] > ary[i+1]){
@@ -29,12 +15,27 @@ public class Sorts {
         }
         return true;
     }
+    
     public static synchronized void main(String[] args) throws FileNotFoundException, InterruptedException {
-        
-        int[] ary  = getRandomArray(999999);
+    	System.out.println("---Creating Arrays---");
+        int[] ary  = getRandomArray(9999999);
         int[] ary2 = getRandomArray(999999);
-        Sorts obj  = new Sorts();
-        obj.doWork(ary, ary2);
+        
+        System.out.println("---Creating Threads---");
+        Thread thr = new Thread(new QuickMultiThreadMaster(ary));
+        Thread thr2 = new Thread(new QuickSingleThread(ary2));
+        
+        System.out.println("---Running Sorts---");
+        thr.start();
+        thr2.start();
+        
+        System.out.println("---Waiting---");
+        thr.join();
+        thr2.join();
+
+
+        System.out.println("1:" + sorted(ary));
+        System.out.println("2:" + sorted(ary2));
         
         //int AVERAGE = 1, RANGE = 9000000, INC = 20000;
         /*Thread bub = new Thread(new BubbleThread(AVERAGE, RANGE, INC));
