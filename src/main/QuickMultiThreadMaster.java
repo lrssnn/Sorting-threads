@@ -7,18 +7,20 @@ import static main.Sorts.quickSort;
 public class QuickMultiThreadMaster implements Runnable{
     
     int[] ary;
+    static int numMade = 0;
+    int instanceNum;
     
     public QuickMultiThreadMaster(int[] target){
         ary = target;
+        instanceNum = numMade;
+        numMade++;
     }
     
     @Override
     public synchronized void run(){
         //print(ary);
         fill(ary, 0, quickSort(ary), 0);
-        //print(ary);
-        notifyAll();
-        //ary[0] = 0;
+        System.out.println(instanceNum + ": Complete");
     }    
     
      public static int[] quickSort(int[] input){

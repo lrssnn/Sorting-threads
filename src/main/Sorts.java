@@ -7,13 +7,17 @@ import java.io.*;
  */
 public class Sorts {
     
-    public synchronized void doWork(int[] ary) throws InterruptedException{
-        System.out.println(sorted(ary));
+    public synchronized void doWork(int[] ary, int[] ary2) throws InterruptedException{
+        System.out.println("---Working---");
         Thread thr = new Thread(new QuickMultiThreadMaster(ary));
+        Thread thr2 = new Thread(new QuickMultiThreadMaster(ary2));
         thr.start();
+        thr2.start();
         thr.join();
+        thr2.join();
         //print(ary);
-        System.out.println(sorted(ary));
+        System.out.println("1:" + sorted(ary));
+        System.out.println("2:" + sorted(ary2));
         
     }
 
@@ -27,9 +31,10 @@ public class Sorts {
     }
     public static synchronized void main(String[] args) throws FileNotFoundException, InterruptedException {
         
-        int[] ary = getRandomArray(50);
-        Sorts obj = new Sorts();
-        obj.doWork(ary);
+        int[] ary  = getRandomArray(500000);
+        int[] ary2 = getRandomArray(50000000);
+        Sorts obj  = new Sorts();
+        obj.doWork(ary, ary2);
         
         //int AVERAGE = 1, RANGE = 9000000, INC = 20000;
         /*Thread bub = new Thread(new BubbleThread(AVERAGE, RANGE, INC));
