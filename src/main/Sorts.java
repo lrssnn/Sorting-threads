@@ -14,8 +14,7 @@ public class Sorts {
         thr.join();
         print(ary);
         System.out.println(sorted(ary));
-        //wait();
-        //print(ary);
+        
     }
 
     public static boolean sorted(int[] ary){
