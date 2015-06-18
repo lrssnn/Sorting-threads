@@ -1,7 +1,5 @@
 package main;
 
-import static main.Sorts.print;
-import static main.Sorts.quickSort;
 
 
 public class QuickMultiThreadMaster implements Runnable{
@@ -16,9 +14,7 @@ public class QuickMultiThreadMaster implements Runnable{
     
     @Override
     public synchronized void run(){
-        //print(ary);
         fill(ary, 0, quickSort(ary), 0);
-
     }    
     
     

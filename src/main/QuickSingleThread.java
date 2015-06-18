@@ -1,8 +1,5 @@
 package main;
 
-import static main.Sorts.print;
-import static main.Sorts.quickSort;
-
 
 public class QuickSingleThread implements Runnable{
     

@@ -39,7 +39,7 @@ public class Sorts {
     	
     	System.out.println("---Creating Arrays---");
     	long createBegin = System.currentTimeMillis();
-    	int[][] ary = getBigRandomArray(10000, 1, 1);
+    	int[][] ary = getBigRandomArray(100000, 100, 2);
     	int[][] ary2 = new int[ary.length][];
     	dualAryCopy(ary2, ary);
     	long createEnd = System.currentTimeMillis();
