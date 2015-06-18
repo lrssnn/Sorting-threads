@@ -1,7 +1,6 @@
 package main;
 
 
-
 public class QuickMultiThreadMaster implements Runnable{
     
     int[] ary;
@@ -20,7 +19,7 @@ public class QuickMultiThreadMaster implements Runnable{
     
      public static int[] quickSort(int[] input){
         //Base Case
-        if(input.length <= 1) return input;
+        if(input.length <= 1000) return combSort(input);
         
         //Choose Pivot
         int pivot = input[(int)input.length/2];
@@ -50,16 +49,29 @@ public class QuickMultiThreadMaster implements Runnable{
         equal = truncate(equal, input.length - iEq);
         greater = truncate(greater, input.length - iGreat);
         
-        //Sort
-        less = quickSort(less);
-        equal = quickSort(equal);
-        greater = quickSort(greater);
+        //Sort in separate threads
+        Thread thrLess 		= new Thread(new QuickMultiThreadMaster(less));
+        Thread thrEqual 	= new Thread(new QuickMultiThreadMaster(equal));
+        Thread thrGreater 	= new Thread(new QuickMultiThreadMaster(greater));
         
+        thrLess.start();
+        thrEqual.start();
+        thrGreater.start();
+        
+        try{
+        thrLess.join();
+        thrEqual.join();
+        thrGreater.join();
+        } catch(InterruptedException e){
+        	System.out.println("Interrupted! World on fire!");
+        }
         //Reconstruct
         int[] output = new int[input.length];
         output = fill(output, 0, less, 0);
         output = fill(output, less.length, equal, 0);
         output = fill(output, less.length + equal.length, greater, 0);
+        
+        //System.out.println("Joins at " + less.length + ", " + (less.length+ equal.length));
         
         return output;
     }
@@ -81,5 +93,38 @@ public class QuickMultiThreadMaster implements Runnable{
             sourceInd++;
         }
         return target;
+    }
+    
+    public static int[] combSort(int[] input){
+        int gap = input.length;
+        double shrink = 1.3;
+        boolean swaps = true;
+        
+        while(gap > 1 || swaps == true){
+            //Update the gap
+            gap = (int)(gap/shrink);
+            if(gap < 1){
+                gap = 1;
+            }
+            
+            //Do the sort
+            int i = 0;
+            swaps = false;
+            while(i+gap < input.length){
+                if(input[i] > input[i+gap]){
+                    input = swap(input, i, i+gap);
+                    swaps = true;
+                }
+                i++;
+            }
+        }
+        return input;
+    }
+    
+    private static int[] swap(int[] input, int a, int b) {
+        int tmp = input[a];
+        input[a] = input[b];
+        input[b] = tmp;
+        return input;
     }
 }

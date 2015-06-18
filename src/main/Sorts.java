@@ -11,6 +11,7 @@ public class Sorts {
     public static boolean sorted(int[] ary){
         for(int i = 0; i < ary.length-1; i++){
             if(ary[i] > ary[i+1]){
+            	System.out.println(i + " " + (i+1));
                 return false;
             }
         }
@@ -36,10 +37,10 @@ public class Sorts {
         
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
-    	
+    	  	
     	System.out.println("---Creating Arrays---");
     	long createBegin = System.currentTimeMillis();
-    	int[][] ary = getBigRandomArray(1000000, 5000, 2);
+    	int[][] ary = getBigRandomArray(100000, 5000, 2);
     	int[][] ary2 = new int[ary.length][];
     	dualAryCopy(ary2, ary);
     	long createEnd = System.currentTimeMillis();
@@ -235,7 +236,7 @@ public class Sorts {
         double shrink = 1.3;
         boolean swaps = true;
         
-        while(gap > 1 && swaps == true){
+        while(gap > 1 || swaps == true){
             //Update the gap
             gap = (int)(gap/shrink);
             if(gap < 1){
