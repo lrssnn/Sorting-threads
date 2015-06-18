@@ -1,6 +1,7 @@
 package main;
 
 import java.io.*;
+import java.util.Arrays;
 /**
  *
  * @author Niklas
@@ -16,27 +17,64 @@ public class Sorts {
         return true;
     }
     
+    public static int[][] getBigRandomArray(int range, int increment, int avg){
+    	
+    	int[][] result = new int [(range/increment)*avg][];
+    	
+    	int index = 0;
+    	//Main loop
+    	for(int i = 1; i <= range; i += increment){
+    		//Repeat AVG times
+    		for(int j = 0; j < avg; j++){
+    			result[index] = getRandomArray(i);
+    			index++;
+    		}
+    	}
+    	
+    	return result;
+    }
         
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-    	    	
+    	
+    	
     	System.out.println("---Creating Arrays---");
-        int[] ary  = getRandomArray(9999999);
-        int[] ary2 = getRandomArray(999999);
+    	long createBegin = System.currentTimeMillis();
+    	int[][] ary = getBigRandomArray(10000, 1, 1);
+    	int[][] ary2 = new int[ary.length][];
+    	dualAryCopy(ary2, ary);
+    	long createEnd = System.currentTimeMillis();
+    	System.out.println("Creating Arrays took " + (createEnd - createBegin)/1000.0 + " seconds");
+    	
         
-        System.out.println("---Creating Threads---");
-        Thread thr = new Thread(new QuickMultiThreadMaster(ary));
-        Thread thr2 = new Thread(new QuickSingleThread(ary2));
+        System.out.println("---Running Single Thread Sorts---");
+        long singleBegin = System.currentTimeMillis();
+        for(int i = 0; i < ary.length; i++){
+        	Thread thr = new Thread(new QuickSingleThread(ary[i]));
+        	thr.start();
+        	thr.join();
+        	if(!sorted(ary[i])){
+        		System.out.println("Single Thread Sort Failed! Position : " + i);
+        		return;
+        	}
+        }
+        long singleEnd = System.currentTimeMillis();
+        System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
         
-        System.out.println("---Running Sorts---");
-        thr.start();
-        thr2.start();
         
-        System.out.println("---Waiting---");
-        thr.join();
-        thr2.join();
-
-        System.out.println("1:" + sorted(ary));
-        System.out.println("2:" + sorted(ary2));
+        System.out.println("---Running Multi Thread Sorts---");
+        long multiBegin = System.currentTimeMillis();
+        for(int i = 0; i < ary2.length; i++){
+        	Thread thr = new Thread(new QuickMultiThreadMaster(ary2[i]));
+        	thr.start();
+        	thr.join();
+        	if(!sorted(ary2[i])){
+        		System.out.println("Single Thread Sort Failed! Position : " + i);
+        		return;
+        	}
+        }
+        long multiEnd = System.currentTimeMillis();
+        System.out.println("Multi thread sorts took " + (multiEnd - multiBegin)/1000.0 + " seconds");
+      
         
        
     }
@@ -77,7 +115,20 @@ public class Sorts {
             System.out.print(" ");
             
         }
+        System.out.print(":  " + input.length);
         System.out.println();
+    }
+    
+    static public void print(int[][] input){
+    	for(int i = 0; i < input.length; i++){
+    		print(input[i]);
+    	}
+    }
+    
+    static public void dualAryCopy(int[][] target, int[][] source){
+    	for(int i = 0; i < target.length; i++){
+    		target[i] = Arrays.copyOf(source[i], source[i].length);
+    	}
     }
 
     private static int[] merge(int[] a, int[] b) {
