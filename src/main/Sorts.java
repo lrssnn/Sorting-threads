@@ -16,7 +16,9 @@ public class Sorts {
         return true;
     }
     
-    public static synchronized void main(String[] args) throws FileNotFoundException, InterruptedException {
+        
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
+    	    	
     	System.out.println("---Creating Arrays---");
         int[] ary  = getRandomArray(9999999);
         int[] ary2 = getRandomArray(999999);
@@ -33,116 +35,10 @@ public class Sorts {
         thr.join();
         thr2.join();
 
-
         System.out.println("1:" + sorted(ary));
         System.out.println("2:" + sorted(ary2));
         
-        //int AVERAGE = 1, RANGE = 9000000, INC = 20000;
-        /*Thread bub = new Thread(new BubbleThread(AVERAGE, RANGE, INC));
-        Thread mrg = new Thread(new MergeThread (AVERAGE, RANGE, INC));
-        Thread qck = new Thread(new QuickThread (AVERAGE, RANGE, INC));
        
-        Thread slc = new Thread(new SelectThread(AVERAGE, RANGE, INC));
-        
-        bub.start();
-        mrg.start();*/
-        //qck.start();
-        //Thread cmb = new Thread(new CombThread  (AVERAGE, RANGE, INC));
-        //cmb.start();
-        //slc.start();
-        
-        //Thread bub = new Thread(new VerbBubbleThread(2000000));
-        //bub.start();
-        
-        //thr3.start();
-        //System.out.println("Something else");
-        
-        /*long totalb = System.currentTimeMillis();
-        int AVERAGE = 200, RANGE = 10000, INC = 20;
-        
-        PrintWriter mergeOut = new PrintWriter("Merge.dat");
-        long totale, mBegin, mEnd;    
-        for(int i = 1; i < RANGE; i += INC){  //Max: 180000
-            //Averaging Loop
-            mBegin = System.currentTimeMillis();
-            for(int j = 0; j < AVERAGE; j++){
-                int[] ary = getRandomArray(i);
-                ary = mergeSort(ary);
-                System.out.println("Merge: Size: " + i + " || Iteration: " + j);
-            }
-            mEnd = System.currentTimeMillis();
-            System.out.println("Sort: " + AVERAGE + " " + i + " sized arrays took " + (mEnd - mBegin)/1000.0 + " seconds");
-            mergeOut.println(i + "," + (mEnd-mBegin));
-        }
-        mergeOut.close();
-        
-        PrintWriter quickOut = new PrintWriter("Quick.dat");
-        long qBegin, qEnd;    
-        for(int i = 1; i < RANGE; i += INC){  //Max: 180000
-            //Averaging Loop
-            qBegin = System.currentTimeMillis();
-            for(int j = 0; j < AVERAGE; j++){
-                int[] ary = getRandomArray(i);
-                ary = quickSort(ary);
-                System.out.println("Quick: Size: " + i + " || Iteration: " + j);
-            }
-            qEnd = System.currentTimeMillis();
-            System.out.println("Sort: " + AVERAGE + " " + i + " sized arrays took " + (qEnd - qBegin)/1000.0 + " seconds");
-            quickOut.println(i + "," + (qEnd-qBegin));
-        }
-        quickOut.close();
-        
-        PrintWriter combOut = new PrintWriter("Comb.dat");
-        long cBegin, cEnd;    
-        for(int i = 1; i < RANGE; i += INC){  //Max: 180000
-            //Averaging Loop
-            cBegin = System.currentTimeMillis();
-            for(int j = 0; j < AVERAGE; j++){
-                int[] ary = getRandomArray(i);
-                ary = combSort(ary);
-                System.out.println("combs: Size: " + i + " || Iteration: " + j);
-            }
-            cEnd = System.currentTimeMillis();
-            System.out.println("Sort: " + AVERAGE + " " + i + " sized arrays took " + (cEnd - cBegin)/1000.0 + " seconds");
-            combOut.println(i + "," + (cEnd-cBegin));
-        }
-        combOut.close();
-        
-         PrintWriter selectOut = new PrintWriter("Select.dat");
-        long sBegin, sEnd;    
-        for(int i = 1; i < RANGE; i += INC){  //Max: 180000
-            //Averaging Loop
-            sBegin = System.currentTimeMillis();
-            for(int j = 0; j < AVERAGE; j++){
-                int[] ary = getRandomArray(i);
-                ary = selectSort(ary);
-                System.out.println("Selec: Size: " + i + " || Iteration: " + j);
-            }
-            sEnd = System.currentTimeMillis();
-            System.out.println("Sort: " + AVERAGE + " " + i + " sized arrays took " + (sEnd - sBegin)/1000.0 + " seconds");
-            selectOut.println(i + "," + (sEnd-sBegin));
-        }
-        selectOut.close();
-        
-        PrintWriter bubbleOut = new PrintWriter("Bubble.dat");
-        long bBegin, bEnd;    
-        for(int i = 1; i < RANGE; i += INC){  //Max: 180000
-            //Averaging Loop
-            bBegin = System.currentTimeMillis();
-            for(int j = 0; j < AVERAGE; j++){
-                int[] ary = getRandomArray(i);
-                ary = bubbleSort(ary);
-                System.out.println("Bubbl: Size: " + i + " || Iteration: " + j);
-            }
-            bEnd = System.currentTimeMillis();
-            System.out.println("Sort: " + AVERAGE + " " + i + " sized arrays took " + (bEnd - bBegin)/1000.0 + " seconds");
-            bubbleOut.println(i + "," + (bEnd-bBegin));
-        }
-        bubbleOut.close();
-        
-        totale = System.currentTimeMillis();
-        System.out.println("Test took " + (totale-totalb) + " milliseconds (" + ((totale-totalb)/60000.0) + " minutes).");
-                */
     }
     
     static public int[] mergeSort(int[] input){
