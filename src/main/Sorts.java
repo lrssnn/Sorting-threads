@@ -39,7 +39,7 @@ public class Sorts {
     	
     	System.out.println("---Creating Arrays---");
     	long createBegin = System.currentTimeMillis();
-    	int[][] ary = getBigRandomArray(100000, 100, 2);
+    	int[][] ary = getBigRandomArray(1000000, 5000, 2);
     	int[][] ary2 = new int[ary.length][];
     	dualAryCopy(ary2, ary);
     	long createEnd = System.currentTimeMillis();
@@ -56,6 +56,7 @@ public class Sorts {
         		System.out.println("Single Thread Sort Failed! Position : " + i);
         		return;
         	}
+        	System.out.println("Single: " + (i*100/ary.length) + "% : length: " + ary[i].length);
         }
         long singleEnd = System.currentTimeMillis();
         System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
@@ -71,8 +72,12 @@ public class Sorts {
         		System.out.println("Single Thread Sort Failed! Position : " + i);
         		return;
         	}
+        	System.out.println("Multi: " + (i*100/ary2.length) + "% : length: " + ary2[i].length);
         }
         long multiEnd = System.currentTimeMillis();
+        
+        System.out.println("Creating Arrays took " + (createEnd - createBegin)/1000.0 + " seconds");
+        System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
         System.out.println("Multi thread sorts took " + (multiEnd - multiBegin)/1000.0 + " seconds");
       
         
