@@ -53,7 +53,6 @@ public class QuickSingleThread implements Runnable{
         
         //Sort
         less = quickSort(less);
-        equal = quickSort(equal);
         greater = quickSort(greater);
         
         //Reconstruct

@@ -40,9 +40,10 @@ public class Sorts {
     	  	
     	System.out.println("---Creating Arrays---");
     	long createBegin = System.currentTimeMillis();
-    	int[][] ary = getBigRandomArray(100000, 5000, 2);
+    	int[][] ary = getBigRandomArray(500000, 5000, 2);
     	int[][] ary2 = new int[ary.length][];
     	dualAryCopy(ary2, ary);
+    	
     	long createEnd = System.currentTimeMillis();
     	System.out.println("Creating Arrays took " + (createEnd - createBegin)/1000.0 + " seconds");
     	
@@ -80,8 +81,7 @@ public class Sorts {
         System.out.println("Creating Arrays took " + (createEnd - createBegin)/1000.0 + " seconds");
         System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
         System.out.println("Multi thread sorts took " + (multiEnd - multiBegin)/1000.0 + " seconds");
-      
-        
+              
        
     }
     
@@ -132,8 +132,14 @@ public class Sorts {
     }
     
     static public void dualAryCopy(int[][] target, int[][] source){
+    	//For each Array
     	for(int i = 0; i < target.length; i++){
-    		target[i] = Arrays.copyOf(source[i], source[i].length);
+    		//Create a target array of the correct length
+    		target[i] = new int[source[i].length];
+    		//For each element
+    		for(int j = 0; j < target[i].length; j++){
+    			target[i][j] = source[i][j];
+    		}
     	}
     }
 

@@ -4,11 +4,12 @@ package main;
 public class QuickMultiThreadMaster implements Runnable{
     
     int[] ary;
+    static int level = 0;
     
     
     public QuickMultiThreadMaster(int[] target){
         ary = target;
-        
+        level++;
     }
     
     @Override
@@ -49,22 +50,19 @@ public class QuickMultiThreadMaster implements Runnable{
         equal = truncate(equal, input.length - iEq);
         greater = truncate(greater, input.length - iGreat);
         
-        //Sort in separate threads
-        Thread thrLess 		= new Thread(new QuickMultiThreadMaster(less));
-        Thread thrEqual 	= new Thread(new QuickMultiThreadMaster(equal));
-        Thread thrGreater 	= new Thread(new QuickMultiThreadMaster(greater));
+        Thread thrLess 		= new Thread(new QuickSingleThread(less));
+        Thread thrGreater 	= new Thread(new QuickSingleThread(greater));
         
         thrLess.start();
-        thrEqual.start();
         thrGreater.start();
         
         try{
         thrLess.join();
-        thrEqual.join();
         thrGreater.join();
         } catch(InterruptedException e){
         	System.out.println("Interrupted! World on fire!");
         }
+        
         //Reconstruct
         int[] output = new int[input.length];
         output = fill(output, 0, less, 0);
