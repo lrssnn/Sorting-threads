@@ -40,7 +40,7 @@ public class Sorts {
     	  	
     	int maxLength 	= 20000000;
     	int increment 	= 500000;
-    	int average		= 5;
+    	int average		= 1;
     	
     	int numTests = (maxLength*average)/increment;
     	
@@ -67,7 +67,7 @@ public class Sorts {
             		return;
             	}
         		tested++;
-        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize);
+        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests));
         	}
         }
         long singleEnd = System.currentTimeMillis();
@@ -98,7 +98,7 @@ public class Sorts {
             		return;
             	}
         		tested++;
-        		System.out.println("Multi: " + percentage(tested, numTests) + "\t: length: " + currentSize);
+        		System.out.println("Multi: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests));
         	}
         }
         long multiEnd = System.currentTimeMillis();
@@ -343,5 +343,23 @@ public class Sorts {
     
     public static String percentage(int top, int bottom){
     	return String.format("%-2f", (top*100.0)/bottom) + "%";
+    }
+    
+    public static String percentageBar(int top, int bottom){
+    	String output = "|";
+    	int percentage = (top*100)/bottom;
+    	
+    	int i;
+    	for(i = 0; i < percentage; i++){
+    		output += "+";
+    	}
+    	
+    	for(int j = i; j < 100; j++){
+    		output += "-";
+    	}
+    	
+    	output += "|";
+    	
+    	return output;
     }
 }
