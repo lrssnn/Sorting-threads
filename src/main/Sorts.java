@@ -38,9 +38,9 @@ public class Sorts {
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
     	  	
-    	int maxLength 	= 10000000;
-    	int increment 	= 10000;
-    	int average		= 10;
+    	int maxLength 	= 20000000;
+    	int increment 	= 500000;
+    	int average		= 5;
     	
     	int numTests = (maxLength*average)/increment;
     	
