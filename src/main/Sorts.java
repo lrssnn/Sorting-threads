@@ -38,47 +38,73 @@ public class Sorts {
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
     	  	
-    	System.out.println("---Creating Arrays---");
-    	long createBegin = System.currentTimeMillis();
-    	int[][] ary = getBigRandomArray(500000, 5000, 2);
-    	int[][] ary2 = new int[ary.length][];
-    	dualAryCopy(ary2, ary);
+    	int maxLength 	= 10000000;
+    	int increment 	= 10000;
+    	int average		= 10;
     	
-    	long createEnd = System.currentTimeMillis();
-    	System.out.println("Creating Arrays took " + (createEnd - createBegin)/1000.0 + " seconds");
+    	int numTests = (maxLength*average)/increment;
     	
-        
         System.out.println("---Running Single Thread Sorts---");
         long singleBegin = System.currentTimeMillis();
-        for(int i = 0; i < ary.length; i++){
-        	Thread thr = new Thread(new QuickSingleThread(ary[i]));
-        	thr.start();
-        	thr.join();
-        	if(!sorted(ary[i])){
-        		System.out.println("Single Thread Sort Failed! Position : " + i);
-        		return;
+        
+        //Main Loop
+        int tested = 0;
+        for(int currentSize = increment; currentSize <= maxLength; currentSize+= increment){
+        	//Averaging Loop
+        	for(int j = 0; j < average; j++){
+        		//Create the array
+        		int[] ary = getRandomArray(currentSize);
+        		
+        		//Create the thread
+        		Thread thr = new Thread(new QuickSingleThread(ary));
+        		
+        		//Sort
+        		thr.start();
+        		thr.join();
+        		
+        		if(!sorted(ary)){
+            		System.out.println("Single Thread Sort Failed! Size : " + currentSize);
+            		return;
+            	}
+        		tested++;
+        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize);
         	}
-        	System.out.println("Single: " + (i*100/ary.length) + "% : length: " + ary[i].length);
         }
         long singleEnd = System.currentTimeMillis();
-        System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
+        //System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
+        
         
         
         System.out.println("---Running Multi Thread Sorts---");
         long multiBegin = System.currentTimeMillis();
-        for(int i = 0; i < ary2.length; i++){
-        	Thread thr = new Thread(new QuickMultiThreadMaster(ary2[i]));
-        	thr.start();
-        	thr.join();
-        	if(!sorted(ary2[i])){
-        		System.out.println("Single Thread Sort Failed! Position : " + i);
-        		return;
+        
+        //Main Loop
+        tested = 0;
+        for(int currentSize = increment; currentSize <= maxLength; currentSize+= increment){
+        	//Averaging Loop
+        	for(int j = 0; j < average; j++){
+        		//Create the array
+        		int[] ary = getRandomArray(currentSize);
+        		
+        		//Create the thread
+        		Thread thr = new Thread(new QuickMultiThreadMaster(ary));
+        		
+        		//Sort
+        		thr.start();
+        		thr.join();
+        		
+        		if(!sorted(ary)){
+            		System.out.println("Single Thread Sort Failed! Size : " + currentSize);
+            		return;
+            	}
+        		tested++;
+        		System.out.println("Multi: " + percentage(tested, numTests) + "\t: length: " + currentSize);
         	}
-        	System.out.println("Multi: " + (i*100/ary2.length) + "% : length: " + ary2[i].length);
         }
         long multiEnd = System.currentTimeMillis();
+       // System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
         
-        System.out.println("Creating Arrays took " + (createEnd - createBegin)/1000.0 + " seconds");
+     
         System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
         System.out.println("Multi thread sorts took " + (multiEnd - multiBegin)/1000.0 + " seconds");
               
@@ -313,5 +339,9 @@ public class Sorts {
             output[i] = array[i];
         }
         return output;
+    }
+    
+    public static String percentage(int top, int bottom){
+    	return String.format("%-2f", (top*100.0)/bottom) + "%";
     }
 }

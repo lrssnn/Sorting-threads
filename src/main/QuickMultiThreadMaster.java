@@ -15,6 +15,7 @@ public class QuickMultiThreadMaster implements Runnable{
     @Override
     public synchronized void run(){
         fill(ary, 0, quickSort(ary), 0);
+        level--;
     }    
     
     
@@ -50,8 +51,14 @@ public class QuickMultiThreadMaster implements Runnable{
         equal = truncate(equal, input.length - iEq);
         greater = truncate(greater, input.length - iGreat);
         
-        Thread thrLess 		= new Thread(new QuickSingleThread(less));
-        Thread thrGreater 	= new Thread(new QuickSingleThread(greater));
+        Thread thrLess, thrGreater;
+        if(level <= 3){
+        	thrLess 	= new Thread(new QuickMultiThreadMaster(less));
+        	thrGreater 	= new Thread(new QuickMultiThreadMaster(greater));
+        } else {
+        	thrLess 	= new Thread(new QuickSingleThread(less));
+        	thrGreater 	= new Thread(new QuickSingleThread(greater));
+        }
         
         thrLess.start();
         thrGreater.start();
