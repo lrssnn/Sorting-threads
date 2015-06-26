@@ -38,112 +38,99 @@ public class Sorts {
         
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
+    	/*
+    	 * New methodology;
+    	 * 
+    	 * 	1.	Build Array
+    	 * 	2.	Copy Array
+    	 * 	3.	Test Single Thread
+    	 * 	4.	Test Multi Thread
+    	 * 	5. 	output to file: size, generateTime, singleTime, multiTime
+    	 * 
+    	 */
+    	
+    	
     	int maxLength 	= 100000000;
-    	int increment 	= 50000000;
+    	int increment 	= 100000;
     	int average		= 1;
     	
     	int numTests = (maxLength*average)/increment;
+    	int numTested = 1;
     	
-    	//Generate input file
-    	PrintWriter input = new PrintWriter(new File("input.dat"));
-    	int numGenerated = 0;
+    	long generateTotal	= 0;
+    	long singleTotal	= 0;
+    	long multiTotal		= 0;
+    	
+    	long generateBegin, generateEnd, singleBegin, singleEnd, multiBegin, multiEnd;
+    	
+    	//Set up the output file
+    	PrintWriter results = new PrintWriter(new File("results.dat"));
+    	results.println("currentSize, generateTime, singleTime, multiTime");
+    	
     	for(int currentSize = increment; currentSize <= maxLength; currentSize += increment){
-    		
+    		long generateTime 	= 0;
+    		long singleTime		= 0;
+    		long multiTime		= 0;
+    		//Averaging loop
     		for(int iteration = 0; iteration < average; iteration++){
     			//Generate an array
+    			generateBegin = System.currentTimeMillis();
     			int[] ary = getRandomArray(currentSize);
-    			print(input, ary);
-    			numGenerated++;
-    			System.out.println("Generation: " + percentage(numGenerated, numTests) + "\t: length: " + currentSize + percentageBar(numGenerated, numTests));
+    			//Copy the array
+    			int[] ary2 = new int[currentSize];
+    			fill(ary2, 0, ary, 0);
+    			generateEnd = System.currentTimeMillis();
+    			
+    			generateTime += generateEnd - generateBegin;
+    			generateTotal += generateTime;
+    			
+    			System.out.println(outputBar("Generate: ", numTested, numTests, currentSize, generateTime));
+    			
+    			//Single Thread test
+    			Thread singleThread = new Thread(new QuickSingleThread(ary));
+    			singleBegin = System.currentTimeMillis();
+    			singleThread.start();
+    			singleThread.join();
+    			singleEnd = System.currentTimeMillis();
+    			
+    			singleTime += singleEnd - singleBegin;
+    			singleTotal += singleTime;
+    			
+    			System.out.println(outputBar("Single: ", numTested, numTests, currentSize, singleTime));
+    			
+    			if(!sorted(ary)){
+    				System.out.println("Single Thread Sort Failed! Size : " + currentSize);
+    				results.close();
+    				return;
+    			}
+    			
+    			//Multi Thread test
+    			Thread multiThread = new Thread(new QuickMultiThreadMaster(ary2));
+    			multiBegin = System.currentTimeMillis();
+    			multiThread.start();
+    			multiThread.join();
+    			multiEnd = System.currentTimeMillis();
+    			
+    			multiTime += multiEnd - multiBegin;
+    			multiTotal += multiTime;
+    			
+    			System.out.println(outputBar("Multi: ", numTested, numTests, currentSize, multiTime));
+    			
+    			if(!sorted(ary2)){
+    				System.out.println("Multi Thread Sort Failed! Size : " + currentSize);
+    				results.close();
+    				return;
+    			}
+    			
+    			numTested++;
     		}
+    		results.println(currentSize + "," + generateTime + "," + singleTime + "," + multiTime);
     	}
-    	input.close();
+    	results.close();
     	
-    	
-    	System.out.println("---Running Single Thread Sorts---");
-        long singleBegin = System.currentTimeMillis();
-        
-        //Main Loop
-        PrintWriter singleOut = new PrintWriter(new File("singleThread.dat"));
-        Scanner read = new Scanner(new File("input.dat"));
-        int tested = 0;
-        for(int currentSize = increment; currentSize <= maxLength; currentSize+= increment){
-        	long sizeTime = 0;
-        	//Averaging Loop
-        	for(int j = 0; j < average; j++){
-        		//Create the array
-        		int[] ary = readAry(read, currentSize);
-        		
-        		//Create the thread
-        		Thread thr = new Thread(new QuickSingleThread(ary));
-        		
-        		//Sort
-        		long testStart = System.currentTimeMillis();
-        		thr.start();
-        		thr.join();
-        		long testEnd = System.currentTimeMillis();
-        		
-        		if(!sorted(ary)){
-            		System.out.println("Single Thread Sort Failed! Size : " + currentSize);
-            		singleOut.close();
-            		return;
-            	}
-        		tested++;
-        		long testTime = testEnd - testStart;
-        		sizeTime += testTime;
-        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests) + "Time: " + testTime/1000.0 + " seconds");
-        	}
-        	singleOut.println(currentSize + "," + sizeTime);
-        }
-        long singleEnd = System.currentTimeMillis();
-        singleOut.close();
-        //System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
-        
-        
-        
-        System.out.println("---Running Multi Thread Sorts---");
-        long multiBegin = System.currentTimeMillis();
-        
-        //Main Loop
-        PrintWriter multiOut = new PrintWriter(new File("multiThread.dat"));
-        read = new Scanner(new File("input.dat"));
-        tested = 0;
-        for(int currentSize = increment; currentSize <= maxLength; currentSize+= increment){
-        	long sizeTime = 0;
-        	for(int j = 0; j < average; j++){
-        		//Create the array
-        		int[] ary = readAry(read, currentSize);
-        		
-        		//Create the thread
-        		Thread thr = new Thread(new QuickMultiThreadMaster(ary));
-        		
-        		//Sort
-        		long testStart = System.currentTimeMillis();
-        		thr.start();
-        		thr.join();
-        		long testEnd = System.currentTimeMillis();
-        		
-        		if(!sorted(ary)){
-            		System.out.println("Single Thread Sort Failed! Size : " + currentSize);
-            		multiOut.close();
-            		return;
-            	}
-        		tested++;
-        		long testTime = testEnd - testStart;
-        		sizeTime+= testTime;
-        		System.out.println("Multi: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests) + "Time: " + testTime/1000.0 + " seconds");
-        	}
-        	multiOut.println(currentSize + "," + sizeTime);
-        }
-        long multiEnd = System.currentTimeMillis();
-        multiOut.close();
-       // System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
-        
-     
-        System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
-        System.out.println("Multi thread sorts took " + (multiEnd - multiBegin)/1000.0 + " seconds");
-              
-       
+    	System.out.println("Generating arrays took " 	+ generateTotal/1000.0 	+ " seconds");
+        System.out.println("Single thread sorts took " 	+ singleTotal/1000.0 	+ " seconds");
+        System.out.println("Multi thread sorts took " 	+ multiTotal/1000.0 	+ " seconds");   
     }
     
     private static int[] readAry(Scanner read, int currentSize) {
@@ -411,6 +398,16 @@ public class Sorts {
     	
     	output += "|";
     	
+    	return output;
+    }
+    
+    public static String outputBar(String title, int numGenerated, int numTests, int currentSize, long time){
+    	String output = title + 
+    					percentage(numGenerated, numTests) + 
+    					"\t: length: " + 
+    					currentSize + 
+    					percentageBar(numGenerated, numTests) +
+    					"Time: " + time/1000.0;
     	return output;
     }
 }
