@@ -38,20 +38,23 @@ public class Sorts {
         
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
-    	int maxLength 	= 20;
-    	int increment 	= 5;
+    	int maxLength 	= 100000000;
+    	int increment 	= 50000000;
     	int average		= 1;
     	
     	int numTests = (maxLength*average)/increment;
     	
     	//Generate input file
     	PrintWriter input = new PrintWriter(new File("input.dat"));
+    	int numGenerated = 0;
     	for(int currentSize = increment; currentSize <= maxLength; currentSize += increment){
     		
     		for(int iteration = 0; iteration < average; iteration++){
     			//Generate an array
     			int[] ary = getRandomArray(currentSize);
     			print(input, ary);
+    			numGenerated++;
+    			System.out.println("Generation: " + percentage(numGenerated, numTests) + "\t: length: " + currentSize + percentageBar(numGenerated, numTests));
     		}
     	}
     	input.close();
@@ -62,7 +65,7 @@ public class Sorts {
         
         //Main Loop
         PrintWriter singleOut = new PrintWriter(new File("singleThread.dat"));
-        Scanner read = new Scanner("input.dat");
+        Scanner read = new Scanner(new File("input.dat"));
         int tested = 0;
         for(int currentSize = increment; currentSize <= maxLength; currentSize+= increment){
         	long sizeTime = 0;
@@ -88,11 +91,12 @@ public class Sorts {
         		tested++;
         		long testTime = testEnd - testStart;
         		sizeTime += testTime;
-        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests) + "Time: " + testTime/1000 + " Seconds");
+        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests) + "Time: " + testTime/1000.0 + " seconds");
         	}
         	singleOut.println(currentSize + "," + sizeTime);
         }
         long singleEnd = System.currentTimeMillis();
+        singleOut.close();
         //System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
         
         
@@ -101,29 +105,38 @@ public class Sorts {
         long multiBegin = System.currentTimeMillis();
         
         //Main Loop
+        PrintWriter multiOut = new PrintWriter(new File("multiThread.dat"));
+        read = new Scanner(new File("input.dat"));
         tested = 0;
         for(int currentSize = increment; currentSize <= maxLength; currentSize+= increment){
-        	//Averaging Loop
+        	long sizeTime = 0;
         	for(int j = 0; j < average; j++){
         		//Create the array
-        		int[] ary = getRandomArray(currentSize);
+        		int[] ary = readAry(read, currentSize);
         		
         		//Create the thread
         		Thread thr = new Thread(new QuickMultiThreadMaster(ary));
         		
         		//Sort
+        		long testStart = System.currentTimeMillis();
         		thr.start();
         		thr.join();
+        		long testEnd = System.currentTimeMillis();
         		
         		if(!sorted(ary)){
             		System.out.println("Single Thread Sort Failed! Size : " + currentSize);
+            		multiOut.close();
             		return;
             	}
         		tested++;
-        		System.out.println("Multi: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests));
+        		long testTime = testEnd - testStart;
+        		sizeTime+= testTime;
+        		System.out.println("Multi: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests) + "Time: " + testTime/1000.0 + " seconds");
         	}
+        	multiOut.println(currentSize + "," + sizeTime);
         }
         long multiEnd = System.currentTimeMillis();
+        multiOut.close();
        // System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
         
      
@@ -383,15 +396,16 @@ public class Sorts {
     }
     
     public static String percentageBar(int top, int bottom){
+    	final int SCALE = 1;
     	String output = "|";
-    	int percentage = (top*200)/bottom;
+    	int percentage = (top*100*SCALE)/bottom;
     	
     	int i;
     	for(i = 0; i < percentage; i++){
     		output += "+";
     	}
     	
-    	for(int j = i; j < 200; j++){
+    	for(int j = i; j < 100*SCALE; j++){
     		output += "-";
     	}
     	
