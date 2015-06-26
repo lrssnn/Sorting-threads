@@ -2,6 +2,7 @@ package main;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Scanner;
 /**
  *
  * @author Niklas
@@ -37,38 +38,59 @@ public class Sorts {
         
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
-    	  	
-    	int maxLength 	= 20000000;
-    	int increment 	= 500000;
+    	int maxLength 	= 20;
+    	int increment 	= 5;
     	int average		= 1;
     	
     	int numTests = (maxLength*average)/increment;
     	
-        System.out.println("---Running Single Thread Sorts---");
+    	//Generate input file
+    	PrintWriter input = new PrintWriter(new File("input.dat"));
+    	for(int currentSize = increment; currentSize <= maxLength; currentSize += increment){
+    		
+    		for(int iteration = 0; iteration < average; iteration++){
+    			//Generate an array
+    			int[] ary = getRandomArray(currentSize);
+    			print(input, ary);
+    		}
+    	}
+    	input.close();
+    	
+    	
+    	System.out.println("---Running Single Thread Sorts---");
         long singleBegin = System.currentTimeMillis();
         
         //Main Loop
+        PrintWriter singleOut = new PrintWriter(new File("singleThread.dat"));
+        Scanner read = new Scanner("input.dat");
         int tested = 0;
         for(int currentSize = increment; currentSize <= maxLength; currentSize+= increment){
+        	long sizeTime = 0;
         	//Averaging Loop
         	for(int j = 0; j < average; j++){
         		//Create the array
-        		int[] ary = getRandomArray(currentSize);
+        		int[] ary = readAry(read, currentSize);
         		
         		//Create the thread
         		Thread thr = new Thread(new QuickSingleThread(ary));
         		
         		//Sort
+        		long testStart = System.currentTimeMillis();
         		thr.start();
         		thr.join();
+        		long testEnd = System.currentTimeMillis();
         		
         		if(!sorted(ary)){
             		System.out.println("Single Thread Sort Failed! Size : " + currentSize);
+            		singleOut.close();
             		return;
             	}
         		tested++;
-        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests));
+        		long testTime = testEnd - testStart;
+        		sizeTime += testTime;
+        		System.out.println("Single: " + percentage(tested, numTests) + "\t: length: " + currentSize + percentageBar(tested, numTests) + "Time: " + testTime/1000 + " Seconds");
         	}
+        	singleOut.println(currentSize + "," + sizeTime);
         }
         long singleEnd = System.currentTimeMillis();
         //System.out.println("Single thread sorts took " + (singleEnd - singleBegin)/1000.0 + " seconds");
@@ -111,7 +133,22 @@ public class Sorts {
        
     }
     
-    static public int[] mergeSort(int[] input){
+    private static int[] readAry(Scanner read, int currentSize) {
+		int[] ary = new int[currentSize];
+		for(int i = 0; i < currentSize; i++){
+			ary[i] = read.nextInt();
+		}
+		return ary;
+	}
+
+	private static void print(PrintWriter file, int[] ary) {
+    	for(int i = 0; i < ary.length; i++){
+    		file.print(ary[i] + " ");
+    	}
+    	file.println("");
+	}
+
+	static public int[] mergeSort(int[] input){
         //Base Case
         if(input.length == 1){
             return input;
@@ -347,14 +384,14 @@ public class Sorts {
     
     public static String percentageBar(int top, int bottom){
     	String output = "|";
-    	int percentage = (top*100)/bottom;
+    	int percentage = (top*200)/bottom;
     	
     	int i;
     	for(i = 0; i < percentage; i++){
     		output += "+";
     	}
     	
-    	for(int j = i; j < 100; j++){
+    	for(int j = i; j < 200; j++){
     		output += "-";
     	}
     	
