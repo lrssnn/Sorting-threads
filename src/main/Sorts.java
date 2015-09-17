@@ -1,7 +1,6 @@
 package main;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Scanner;
 /**
  *
@@ -12,7 +11,7 @@ public class Sorts {
     public static boolean sorted(int[] ary){
         for(int i = 0; i < ary.length-1; i++){
             if(ary[i] > ary[i+1]){
-            	System.out.println(i + " " + (i+1));
+            	//System.out.println(i + " " + (i+1));
                 return false;
             }
         }
@@ -37,72 +36,39 @@ public class Sorts {
     }
         
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-    	
-    	/*
-    	 * New methodology;
-    	 * 
-    	 * 	1.	Build Array
-    	 * 	2.	Copy Array
-    	 * 	3.	Test Single Thread
-    	 * 	4.	Test Multi Thread
-    	 * 	5. 	output to file: size, generateTime, singleTime, multiTime
-    	 * 
-    	 */
-    	
-    	
-    	int maxLength 	= 9999999;
-    	int increment 	= 999999;
+
+    	int maxLength 	= 1000000;
+    	int increment 	= 50000;
     	int average		= 1;
-    	
-    	int numTests = (maxLength*average)/increment;
-    	int numTested = 1;
-    	
-    	long generateTotal	= 0;
-    	long singleTotal	= 0;
-    	
-    	long generateBegin, generateEnd, singleBegin, singleEnd;
-    	
+
     	long total = System.currentTimeMillis();    	
-    	for(int currentSize = increment; currentSize <= maxLength; currentSize += increment){
-    		long generateTime 	= 0;
-    		long singleTime		= 0;
     		
-    		//Averaging loop
-    		for(int iteration = 0; iteration < average; iteration++){
-    			//Generate an array
-    			generateBegin = System.currentTimeMillis();
-    			int[] ary = getRandomArray(currentSize);
-    			generateEnd = System.currentTimeMillis();
-    			
-    			generateTime += generateEnd - generateBegin;
-    			generateTotal += generateEnd - generateBegin;
-    			
-    			//System.out.println("Generated");
-    			
-    			//Single Thread test
-    			Thread singleThread = new Thread(new QuickSingleThread(ary));
-    			singleBegin = System.currentTimeMillis();
-    			ary = combSort(ary);
-    			singleEnd = System.currentTimeMillis();
-    			
-    			singleTime += singleEnd - singleBegin;
-    			singleTotal += singleEnd - singleBegin;
-    			
-    			    			
-    			if(!sorted(ary)){
-    				System.out.println("Single Thread Sort Failed! Size : " + currentSize);
-    				return;
-    			}
-    			
-    			numTested++;
-    		}
-    		System.out.println(outputBar("Single:   ", numTested, numTests, currentSize, singleTime));
-    	}
+    	Thread thr = new Thread(new BubbleThread(average, maxLength, increment));
+    	thr.run();
+    	thr.join();
+    	
+    	thr = new Thread(new CombThread(average, maxLength, increment));
+    	thr.run();
+    	thr.join();
+    	
+    	thr = new Thread(new SelectThread(average, maxLength, increment));
+    	thr.run();
+    	thr.join();
+    	
+    	thr = new Thread(new MergeThread(average, maxLength, increment));
+    	thr.run();
+    	thr.join();
+    	
+    	thr = new Thread(new QuickThread(average, maxLength, increment));
+    	thr.run();
+    	thr.join();
+    	
+    	thr = new Thread(new Counting(average, maxLength, increment));
+    	thr.run();
+    	thr.join();
+    	
     	long end = System.currentTimeMillis();
-    	    	
-    	System.out.println("Generating arrays took " 	+ generateTotal/1000.0 	+ " seconds");
-        System.out.println("Single thread sorts took " 	+ singleTotal/1000.0 	+ " seconds");
-        System.out.println("Total test time: " 			+ (end - total)/1000.0 	+ " seconds");   
+    	System.out.println("Test time: " + (end - total));
     }
     
     private static int[] readAry(Scanner read, int currentSize) {
@@ -151,12 +117,12 @@ public class Sorts {
     }
     
     static public void print(int[] input){
-        for(int i = 0; i< input.length; i++){
-            System.out.print(input[i]);
-            System.out.print(" ");
-            
-        }
-        System.out.print(":  " + input.length);
+//        for(int i = 0; i< input.length; i++){
+//            System.out.print(input[i]);
+//            System.out.print(" ");
+//            
+//        }
+        System.out.print(":  " + input.length + ": " + sorted(input));
         System.out.println();
     }
     
@@ -351,7 +317,7 @@ public class Sorts {
     }
     
     public static String percentage(int top, int bottom){
-    	return String.format("%-2f", (top*100.0)/bottom) + "%";
+    	return String.format("%-2.2f", (top*100.0)/bottom) + "%";
     }
     
     public static String percentageBar(int top, int bottom){
@@ -374,7 +340,7 @@ public class Sorts {
     }
     
     public static String outputBar(String title, int numGenerated, int numTests, int currentSize, long time){
-    	String output = title + 
+    	String output = title + " " +
     					percentage(numGenerated, numTests) + 
     					"\t: length: " + 
     					currentSize + 
@@ -383,7 +349,32 @@ public class Sorts {
     	return output;
     }
     
-    public static void countingSort(int[] array){
-    	//TODO
+    public static int[] countingSort(int[] array){
+    	int MAX = 1800000;
+    	int[] count = new int[MAX];
+    	int[] output = new int[array.length];
+    	
+    	
+    	//Count
+    	for(int i : array){
+    		count[i]++;
+    	}
+    	
+    	int total = 0;
+    	int oldCount;
+    	//Convert to numBefore
+    	for(int i = 0; i < MAX; i++){
+    		oldCount = count[i];
+    		count[i] = total;
+    		total+= oldCount;
+    	}
+    	
+    	//Copy to output array
+    	for(int i : array){
+    		output[count[i]] = i;
+    		count[i] += 1;
+    	}
+    	
+    	return output;
     }
 }

@@ -25,7 +25,7 @@ public class BubbleThread implements Runnable{
         }
         long bBegin, bEnd; 
         long tBegin = System.currentTimeMillis();
-        for(int i = RANGE; i <= RANGE; i += INC){  //Max: 180000
+        for(int i = INC; i <= RANGE; i += INC){  //Max: 180000
             //Averaging Loop
             bBegin = System.currentTimeMillis();
             for(int j = 0; j < AVERAGE; j++){
@@ -34,9 +34,7 @@ public class BubbleThread implements Runnable{
                 //System.out.println("Bubbl: Size: " + i + " || Iteration: " + j);
             }
             bEnd = System.currentTimeMillis();
-            System.out.println("Bubble: ||" + 
-                    Math.round((double)i/(((double)RANGE/(double)INC )* (double)AVERAGE))/100.0 + 
-                    "%      ||" + i + "         ||" + (bEnd-bBegin)/1000.0 + " seconds");
+            System.out.println(Sorts.outputBar("Bubble", i, RANGE, i, bEnd-bBegin));
             out.println(i + "," + (bEnd-bBegin));
         }
         long tEnd = System.currentTimeMillis();

@@ -8,7 +8,6 @@ public class QuickSingleThread implements Runnable{
     
     public QuickSingleThread(int[] target){
         ary = target;
-        
     }
     
     @Override

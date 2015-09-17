@@ -3,14 +3,13 @@ package main;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import static main.Sorts.combSort;
 import static main.Sorts.getRandomArray;
 
 
-public class CombThread implements Runnable{
+public class Counting implements Runnable{
     int AVERAGE, RANGE, INC;
     
-    public CombThread(int avg, int rng, int inc){
+    public Counting(int avg, int rng, int inc){
         AVERAGE = avg;
         RANGE   = rng;
         INC     = inc;
@@ -19,7 +18,7 @@ public class CombThread implements Runnable{
     public void run() {
         PrintWriter out;
         try {
-            out = new PrintWriter("Comb.dat");
+            out = new PrintWriter("Count.dat");
         } catch (FileNotFoundException ex) {
             return;
         }
@@ -30,15 +29,15 @@ public class CombThread implements Runnable{
             bBegin = System.currentTimeMillis();
             for(int j = 0; j < AVERAGE; j++){
                 int[] ary = getRandomArray(i);
-                ary = combSort(ary);
+                ary = Sorts.countingSort(ary);
                 //System.out.println("Bubbl: Size: " + i + " || Iteration: " + j);
             }
             bEnd = System.currentTimeMillis();
-            System.out.println(Sorts.outputBar("Comb", i, RANGE, i, bEnd-bBegin));
+            System.out.println(Sorts.outputBar("Counting", i, RANGE, i, bEnd-bBegin));
             out.println(i + "," + (bEnd-bBegin));
         }
         long tEnd = System.currentTimeMillis();
-        System.out.println("Comb Finished in " + (tEnd - tBegin)/1000 + " seconds.");
+        System.out.println("Count Finished in " + (tEnd - tBegin)/1000 + " seconds.");
         out.close();
     }
     

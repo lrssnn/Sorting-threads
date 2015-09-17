@@ -2,6 +2,7 @@ package main;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+
 import static main.Sorts.getRandomArray;
 import static main.Sorts.mergeSort;
 
@@ -25,7 +26,7 @@ public class MergeThread implements Runnable{
         }
         long bBegin, bEnd; 
         long tBegin = System.currentTimeMillis();
-        for(int i = RANGE; i <= RANGE; i += INC){  //Max: 180000
+        for(int i = INC; i <= RANGE; i += INC){  //Max: 180000
             //Averaging Loop
             bBegin = System.currentTimeMillis();
             for(int j = 0; j < AVERAGE; j++){
@@ -34,10 +35,7 @@ public class MergeThread implements Runnable{
                 //System.out.println("Bubbl: Size: " + i + " || Iteration: " + j);
             }
             bEnd = System.currentTimeMillis();
-            System.out.println("Merge:  ||" + 
-                    Math.round((double)i/(((double)RANGE/(double)INC )* (double)AVERAGE))/100.0 + 
-                    "%      ||" + i + "         ||" + (bEnd-bBegin)/1000.0 + " seconds");
-            out.println(i + "," + (bEnd-bBegin));
+            System.out.println(Sorts.outputBar("Merge", i, RANGE, i, bEnd-bBegin));
             out.println(i + "," + (bEnd-bBegin));
         }
         long tEnd = System.currentTimeMillis();
