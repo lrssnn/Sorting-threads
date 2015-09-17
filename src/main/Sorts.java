@@ -50,8 +50,8 @@ public class Sorts {
     	 */
     	
     	
-    	int maxLength 	= 100000000;
-    	int increment 	= 100000;
+    	int maxLength 	= 9999999;
+    	int increment 	= 999999;
     	int average		= 1;
     	
     	int numTests = (maxLength*average)/increment;
@@ -59,78 +59,50 @@ public class Sorts {
     	
     	long generateTotal	= 0;
     	long singleTotal	= 0;
-    	long multiTotal		= 0;
     	
-    	long generateBegin, generateEnd, singleBegin, singleEnd, multiBegin, multiEnd;
+    	long generateBegin, generateEnd, singleBegin, singleEnd;
     	
-    	//Set up the output file
-    	PrintWriter results = new PrintWriter(new File("results.dat"));
-    	results.println("currentSize, generateTime, singleTime, multiTime");
-    	
+    	long total = System.currentTimeMillis();    	
     	for(int currentSize = increment; currentSize <= maxLength; currentSize += increment){
     		long generateTime 	= 0;
     		long singleTime		= 0;
-    		long multiTime		= 0;
+    		
     		//Averaging loop
     		for(int iteration = 0; iteration < average; iteration++){
     			//Generate an array
     			generateBegin = System.currentTimeMillis();
     			int[] ary = getRandomArray(currentSize);
-    			//Copy the array
-    			int[] ary2 = new int[currentSize];
-    			fill(ary2, 0, ary, 0);
     			generateEnd = System.currentTimeMillis();
     			
     			generateTime += generateEnd - generateBegin;
-    			generateTotal += generateTime;
+    			generateTotal += generateEnd - generateBegin;
     			
-    			System.out.println(outputBar("Generate: ", numTested, numTests, currentSize, generateTime));
+    			//System.out.println("Generated");
     			
     			//Single Thread test
     			Thread singleThread = new Thread(new QuickSingleThread(ary));
     			singleBegin = System.currentTimeMillis();
-    			singleThread.start();
-    			singleThread.join();
+    			ary = combSort(ary);
     			singleEnd = System.currentTimeMillis();
     			
     			singleTime += singleEnd - singleBegin;
-    			singleTotal += singleTime;
+    			singleTotal += singleEnd - singleBegin;
     			
-    			System.out.println(outputBar("Single: ", numTested, numTests, currentSize, singleTime));
-    			
+    			    			
     			if(!sorted(ary)){
     				System.out.println("Single Thread Sort Failed! Size : " + currentSize);
-    				results.close();
-    				return;
-    			}
-    			
-    			//Multi Thread test
-    			Thread multiThread = new Thread(new QuickMultiThreadMaster(ary2));
-    			multiBegin = System.currentTimeMillis();
-    			multiThread.start();
-    			multiThread.join();
-    			multiEnd = System.currentTimeMillis();
-    			
-    			multiTime += multiEnd - multiBegin;
-    			multiTotal += multiTime;
-    			
-    			System.out.println(outputBar("Multi: ", numTested, numTests, currentSize, multiTime));
-    			
-    			if(!sorted(ary2)){
-    				System.out.println("Multi Thread Sort Failed! Size : " + currentSize);
-    				results.close();
     				return;
     			}
     			
     			numTested++;
     		}
-    		results.println(currentSize + "," + generateTime + "," + singleTime + "," + multiTime);
+    		System.out.println(outputBar("Single:   ", numTested, numTests, currentSize, singleTime));
     	}
-    	results.close();
-    	
+    	long end = System.currentTimeMillis();
+    	    	
     	System.out.println("Generating arrays took " 	+ generateTotal/1000.0 	+ " seconds");
         System.out.println("Single thread sorts took " 	+ singleTotal/1000.0 	+ " seconds");
-        System.out.println("Multi thread sorts took " 	+ multiTotal/1000.0 	+ " seconds");   
+        System.out.println("Total test time: " 			+ (end - total)/1000.0 	+ " seconds");   
     }
     
     private static int[] readAry(Scanner read, int currentSize) {
@@ -409,5 +381,9 @@ public class Sorts {
     					percentageBar(numGenerated, numTests) +
     					"Time: " + time/1000.0;
     	return output;
+    }
+    
+    public static void countingSort(int[] array){
+    	//TODO
     }
 }
