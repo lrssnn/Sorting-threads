@@ -36,26 +36,26 @@ public class Sorts {
     }
         
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-
-    	int maxLength 	= 1000000;
-    	int increment 	= 50000;
+    	
+    	int maxLength 	= 20000000;
+    	int increment 	= 100000;
     	int average		= 1;
 
     	long total = System.currentTimeMillis();    	
     		
-    	Thread thr = new Thread(new BubbleThread(average, maxLength, increment));
-    	thr.run();
-    	thr.join();
+//    	Thread thr = new Thread(new BubbleThread(average, maxLength, increment));
+//    	thr.run();
+//    	thr.join();
     	
-    	thr = new Thread(new CombThread(average, maxLength, increment));
-    	thr.run();
-    	thr.join();
+//    	Thread thr = new Thread(new CombThread(average, maxLength, increment));
+//    	thr.run();
+//    	thr.join();
     	
-    	thr = new Thread(new SelectThread(average, maxLength, increment));
-    	thr.run();
-    	thr.join();
+//    	thr = new Thread(new SelectThread(average, maxLength, increment));
+//    	thr.run();
+//    	thr.join();
     	
-    	thr = new Thread(new MergeThread(average, maxLength, increment));
+    	Thread thr = new Thread(new MergeThread(average, maxLength, increment));
     	thr.run();
     	thr.join();
     	

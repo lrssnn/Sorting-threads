@@ -24,20 +24,22 @@ public class Counting implements Runnable{
         }
         long bBegin, bEnd; 
         long tBegin = System.currentTimeMillis();
+        System.out.print("Count: ");
         for(int i = INC; i <= RANGE; i += INC){  //Max: 180000
             //Averaging Loop
             bBegin = System.currentTimeMillis();
             for(int j = 0; j < AVERAGE; j++){
                 int[] ary = getRandomArray(i);
                 ary = Sorts.countingSort(ary);
+                System.out.print("+");
                 //System.out.println("Bubbl: Size: " + i + " || Iteration: " + j);
             }
             bEnd = System.currentTimeMillis();
-            System.out.println(Sorts.outputBar("Counting", i, RANGE, i, bEnd-bBegin));
+            //System.out.println(Sorts.outputBar("Counting", i, RANGE, i, bEnd-bBegin));
             out.println(i + "," + (bEnd-bBegin));
         }
         long tEnd = System.currentTimeMillis();
-        System.out.println("Count Finished in " + (tEnd - tBegin)/1000 + " seconds.");
+        System.out.println((tEnd - tBegin)/1000 + " seconds.");
         out.close();
     }
     

@@ -25,6 +25,7 @@ public class QuickThread implements Runnable{
         }
         long bBegin, bEnd; 
         long tBegin = System.currentTimeMillis();
+        System.out.print("Quick: ");
         for(int i = INC; i <= RANGE; i += INC){  //Max: 180000
             //Averaging Loop
             bBegin = System.currentTimeMillis();
@@ -32,13 +33,15 @@ public class QuickThread implements Runnable{
                 int[] ary = getRandomArray(i);
                 ary = quickSort(ary);
                 //System.out.println("Bubbl: Size: " + i + " || Iteration: " + j);
+                System.out.print("+");
             }
             bEnd = System.currentTimeMillis();
-            System.out.println(Sorts.outputBar("Quick", i, RANGE, i, bEnd-bBegin));
+            //System.out.println(Sorts.outputBar("Quick", i, RANGE, i, bEnd-bBegin));
+            
             out.println(i + "," + (bEnd-bBegin));
         }
         long tEnd = System.currentTimeMillis();
-        System.out.println("Quick Finished in " + (tEnd - tBegin)/1000 + " seconds.");
+        System.out.println((tEnd - tBegin)/1000 + " seconds.");
         out.close();
     }
     
