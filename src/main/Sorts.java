@@ -1,95 +1,81 @@
 package main;
 
-import java.io.*;
-import java.util.Scanner;
-/**
- *
- * @author Niklas
- */
-public class Sorts {
+import java.io.FileNotFoundException;
+
+class Sorts {
     
-    public static boolean sorted(int[] ary){
+    private static boolean sorted(int[] ary){
         for(int i = 0; i < ary.length-1; i++){
             if(ary[i] > ary[i+1]){
-            	//System.out.println(i + " " + (i+1));
                 return false;
             }
         }
         return true;
     }
-    
-    public static int[][] getBigRandomArray(int range, int increment, int avg){
-    	
-    	int[][] result = new int [(range/increment)*avg][];
-    	
-    	int index = 0;
-    	//Main loop
-    	for(int i = 1; i <= range; i += increment){
-    		//Repeat AVG times
-    		for(int j = 0; j < avg; j++){
-    			result[index] = getRandomArray(i);
-    			index++;
-    		}
-    	}
-    	
-    	return result;
-    }
-        
+
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
-    	int maxLength 	= 20000000;
-    	int increment 	= 100000;
+    	int maxLength 	= 30;
+    	int increment 	= 200000;
     	int average		= 1;
 
-    	long total = System.currentTimeMillis();    	
-    		
-//    	Thread thr = new Thread(new BubbleThread(average, maxLength, increment));
-//    	thr.run();
-//    	thr.join();
-    	
-//    	Thread thr = new Thread(new CombThread(average, maxLength, increment));
-//    	thr.run();
-//    	thr.join();
-    	
-//    	thr = new Thread(new SelectThread(average, maxLength, increment));
-//    	thr.run();
-//    	thr.join();
-    	
-    	Thread thr = new Thread(new MergeThread(average, maxLength, increment));
-    	thr.run();
-    	thr.join();
-    	
-    	thr = new Thread(new QuickThread(average, maxLength, increment));
-    	thr.run();
-    	thr.join();
-    	
-    	thr = new Thread(new Counting(average, maxLength, increment));
-    	thr.run();
-    	thr.join();
-    	
+    	long begin = System.currentTimeMillis();
+
+        int[] src = getRandomArray(maxLength);
+        int[] ary = new int[src.length];
+
+        if(sorted(src)){
+            System.out.println("Array is already sorted!");
+        }
+
+        System.arraycopy(src, 0, ary, 0, src.length);
+        verfiy("Bubble", ary);
+        bubbleSort(ary);
+        verfiy("Bubble", ary);
+
+        System.arraycopy(src, 0, ary, 0, src.length);
+        verfiy("Select", ary);
+        selectSort(ary);
+        verfiy("Select", ary);
+
+        System.arraycopy(src, 0, ary, 0, src.length);
+        verfiy("Comb", ary);
+        combSort(ary);
+        verfiy("Comb", ary);
+
+        System.arraycopy(src, 0, ary, 0, src.length);
+        verfiy("Counting", ary);
+        countingSort(ary);
+        verfiy("Counting", ary);
+
+        System.arraycopy(src, 0, ary, 0, src.length);
+        verfiy("Merge", ary);
+        mergeSort(ary);
+        verfiy("Merge", ary);
+
+        System.arraycopy(src, 0, ary, 0, src.length);
+        verfiy("Quick", ary);
+        quickSort(ary);
+        verfiy("Quick", ary);
+
+
+
     	long end = System.currentTimeMillis();
-    	System.out.println("Test time: " + (end - total));
+    	System.out.println("Test time: " + (end - begin));
     }
-    
-    private static int[] readAry(Scanner read, int currentSize) {
-		int[] ary = new int[currentSize];
-		for(int i = 0; i < currentSize; i++){
-			ary[i] = read.nextInt();
-		}
-		return ary;
-	}
 
-	private static void print(PrintWriter file, int[] ary) {
-    	for(int i = 0; i < ary.length; i++){
-    		file.print(ary[i] + " ");
-    	}
-    	file.println("");
-	}
+    private static void verfiy(String sortName, int[] ary) {
+        if(sorted(ary)){
+            System.out.println(sortName + " sorted successfully");
+        } else {
+            System.out.println(sortName + " not sorted.");
+        }
+    }
 
-	static public int[] mergeSort(int[] input){
+    private static void mergeSort(int[] input){
         //Base Case
         if(input.length == 1){
-            return input;
+            return;
         }
         
         //Split into two arrays
@@ -104,105 +90,42 @@ public class Sorts {
             i++;
         }
  
-        a = mergeSort(a);
-        b = mergeSort(b);
-        
-        //Merge
-        //print(a);
-        //print(b);
-        input = merge(a,b);
-        //System.out.print("Merge:");
-        //print(input);
-        return input;
-    }
-    
-    static public void print(int[] input){
-//        for(int i = 0; i< input.length; i++){
-//            System.out.print(input[i]);
-//            System.out.print(" ");
-//            
-//        }
-        System.out.print(":  " + input.length + ": " + sorted(input));
-        System.out.println();
-    }
-    
-    static public void print(int[][] input){
-    	for(int i = 0; i < input.length; i++){
-    		print(input[i]);
-    	}
-    }
-    
-    static public void dualAryCopy(int[][] target, int[][] source){
-    	//For each Array
-    	for(int i = 0; i < target.length; i++){
-    		//Create a target array of the correct length
-    		target[i] = new int[source[i].length];
-    		//For each element
-    		for(int j = 0; j < target[i].length; j++){
-    			target[i][j] = source[i][j];
-    		}
-    	}
+        mergeSort(a);
+        mergeSort(b);
+
+        merge(input, a,b);
     }
 
-    private static int[] merge(int[] a, int[] b) {
-        int[] output = new int[a.length + b.length];
+    private static void merge(int[] out, int[] a, int[] b) {
         int indA= 0, indB = 0;
         for(int i = 0; i < a.length + b.length; i++){
             if(a[indA] < b[indB]){
-                output[i] = a[indA];
+                out[i] = a[indA];
                 indA++;
                 if(indA == a.length){
-                    output = fill(output, i+1, b, indB);
-                    return output;
+                    System.arraycopy(b, indB, out, i+1, b.length-indB);
+                    return;
                 }
             } else {
-                output[i] = b[indB];
+                out[i] = b[indB];
                 indB++;
                 if(indB == b.length){
-                    output = fill(output, i+1, a, indA);
-                    return output;
+                    System.arraycopy(a, indA, out, i+1, a.length-indA);
+                    return;
                 }
             }
         }
-        return output;
     }
 
-    private static int[] fill(int[] target, int targetStart, int[] source, int sourceStart) {
-        int sourceInd = sourceStart;
-        int targetInd = targetStart;
-        for(int i = 0; i < (source.length - sourceStart); i++){
-            target[targetInd] = source[sourceInd];
-            targetInd++;
-            sourceInd++;
-        }
-        return target;
-    }
-    
-    public static int[] getRandomArray(int length){
+    private static int[] getRandomArray(int length){
         int[] output = new int[length];
         for(int i = 0; i < length; i++){
-            output[i] = (int) (Math.floor(Math.random() * (1800000 - 0)));
-        }
-        return output;
-    }
-    
-    public static int[] insertionSort(int[] input){
-        int[] output = new int[input.length];
-        for(int i = 0; i < input.length; i++){
-            insert(output, input[i]);
+            output[i] = (int) (Math.floor(Math.random() * (1800000)));
         }
         return output;
     }
 
-    private static void insert(int[] array, int number) {
-        for(int i = 0; i < array.length; i++){
-            if(number <= array[i]){
-                
-            }
-        }
-    }
-    
-    public static int[] selectSort(int[] input){
+    private static void selectSort(int[] input){
         for(int i = 0; i < input.length; i++){
             int currentLowest = i;
             for(int j = i; j < input.length; j++){
@@ -210,40 +133,37 @@ public class Sorts {
                     currentLowest = j;
                 }
             }
-            input = swap(input, i, currentLowest);
+            swap(input, i, currentLowest);
         }
-        return input;
     }
 
-    private static int[] swap(int[] input, int a, int b) {
+    private static void swap(int[] input, int a, int b) {
         int tmp = input[a];
         input[a] = input[b];
         input[b] = tmp;
-        return input;
     }
     
-    public static int[] bubbleSort(int[] input){
-        boolean swaps = false;
+    private static void bubbleSort(int[] input){
+        boolean swaps;
         int j = input.length;
         do{
             swaps = false;
             for(int i = 1; i < j; i++){
                 if(input[i-1] > input[i]){
-                    input = swap(input, i-1, i);
+                    swap(input, i-1, i);
                     swaps = true;
                 }
             }
             j--;
         } while(swaps);
-        return input;
     }
     
-    public static int[] combSort(int[] input){
+    private static void combSort(int[] input){
         int gap = input.length;
         double shrink = 1.3;
         boolean swaps = true;
         
-        while(gap > 1 || swaps == true){
+        while(gap > 1 || swaps){
             //Update the gap
             gap = (int)(gap/shrink);
             if(gap < 1){
@@ -255,105 +175,65 @@ public class Sorts {
             swaps = false;
             while(i+gap < input.length){
                 if(input[i] > input[i+gap]){
-                    input = swap(input, i, i+gap);
+                    swap(input, i, i+gap);
                     swaps = true;
                 }
                 i++;
             }
         }
-        return input;
     }
     
-    public static int[] quickSort(int[] input){
+    private static void quickSort(int[] input){
         //Base Case
-        if(input.length <= 1) return input;
+        if(input.length <= 1) return;
         
         //Choose Pivot
-        int pivot = input[(int)input.length/2];
+        int pivot = input[input.length /2];
         
         //Partition
         int[] less = new int[input.length], equal = new int[input.length], greater = new int[input.length];
         int iLess = 0, iEq = 0, iGreat = 0;
-        for(int i = 0; i < input.length; i++){
-            if(input[i] < pivot){
-                less[iLess] = input[i];
+        for (int anInput : input) {
+            if (anInput < pivot) {
+                less[iLess] = anInput;
                 iLess++;
-            } else if(input[i] == pivot){
-                equal[iEq] = input[i];
+            } else if (anInput == pivot) {
+                equal[iEq] = anInput;
                 iEq++;
             } else {
-                greater[iGreat] = input[i];
+                greater[iGreat] = anInput;
                 iGreat++;
             }
         }
         
         if(iEq == input.length){
-            return equal;
+            return;
         }
         less = truncate(less, input.length - iLess);
         equal = truncate(equal, input.length - iEq);
         greater = truncate(greater, input.length - iGreat);
         
         //Sort
-        less = quickSort(less);
-        equal = quickSort(equal);
-        greater = quickSort(greater);
+        quickSort(less);
+        quickSort(equal);
+        quickSort(greater);
         
         //Reconstruct
-        int[] output = new int[input.length];
-        output = fill(output, 0, less, 0);
-        output = fill(output, less.length, equal, 0);
-        output = fill(output, less.length + equal.length, greater, 0);
-        
-        return output;
-    }
+        System.arraycopy(less, 0, input, 0, less.length);
+        System.arraycopy(equal, 0, input, less.length, equal.length);
+        System.arraycopy(greater, 0, input, less.length + equal.length, greater.length);
+        }
 
     private static int[] truncate(int[] array, int numRemoved) {
         int[] output = new int[array.length - numRemoved];
-        for(int i = 0; i < output.length; i++){
-            output[i] = array[i];
-        }
+        System.arraycopy(array, 0, output, 0, output.length);
         return output;
     }
-    
-    public static String percentage(int top, int bottom){
-    	return String.format("%-2.2f", (top*100.0)/bottom) + "%";
-    }
-    
-    public static String percentageBar(int top, int bottom){
-    	final int SCALE = 1;
-    	String output = "|";
-    	int percentage = (top*100*SCALE)/bottom;
-    	
-    	int i;
-    	for(i = 0; i < percentage; i++){
-    		output += "+";
-    	}
-    	
-    	for(int j = i; j < 100*SCALE; j++){
-    		output += "-";
-    	}
-    	
-    	output += "|";
-    	
-    	return output;
-    }
-    
-    public static String outputBar(String title, int numGenerated, int numTests, int currentSize, long time){
-    	String output = title + " " +
-    					percentage(numGenerated, numTests) + 
-    					"\t: length: " + 
-    					currentSize + 
-    					percentageBar(numGenerated, numTests) +
-    					"Time: " + time/1000.0;
-    	return output;
-    }
-    
-    public static int[] countingSort(int[] array){
-    	int MAX = 1800000;
+
+    private static void countingSort(int[] array){
+        int MAX = max(array)+1;
     	int[] count = new int[MAX];
-    	int[] output = new int[array.length];
-    	
+        int[] output = new int[array.length];
     	
     	//Count
     	for(int i : array){
@@ -374,7 +254,17 @@ public class Sorts {
     		output[count[i]] = i;
     		count[i] += 1;
     	}
-    	
-    	return output;
+
+        System.arraycopy(output, 0, array, 0, array.length);
+    }
+
+    private static int max(int[] array){
+        int max = array[0];
+        for(int num: array){
+            if(num > max){
+                max = num;
+            }
+        }
+        return max;
     }
 }
