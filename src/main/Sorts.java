@@ -15,7 +15,7 @@ class Sorts {
 
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
-    	int maxLength 	= 30;
+    	int maxLength 	= 30000;
     	int increment 	= 200000;
     	int average		= 1;
 
@@ -29,34 +29,34 @@ class Sorts {
         }
 
         System.arraycopy(src, 0, ary, 0, src.length);
-        verfiy("Bubble", ary);
+        verify("Bubble", ary);
         bubbleSort(ary);
-        verfiy("Bubble", ary);
+        verify("Bubble", ary);
 
         System.arraycopy(src, 0, ary, 0, src.length);
-        verfiy("Select", ary);
+        verify("Select", ary);
         selectSort(ary);
-        verfiy("Select", ary);
+        verify("Select", ary);
 
         System.arraycopy(src, 0, ary, 0, src.length);
-        verfiy("Comb", ary);
+        verify("Comb", ary);
         combSort(ary);
-        verfiy("Comb", ary);
+        verify("Comb", ary);
 
         System.arraycopy(src, 0, ary, 0, src.length);
-        verfiy("Counting", ary);
+        verify("Counting", ary);
         countingSort(ary);
-        verfiy("Counting", ary);
+        verify("Counting", ary);
 
         System.arraycopy(src, 0, ary, 0, src.length);
-        verfiy("Merge", ary);
+        verify("Merge", ary);
         mergeSort(ary);
-        verfiy("Merge", ary);
+        verify("Merge", ary);
 
         System.arraycopy(src, 0, ary, 0, src.length);
-        verfiy("Quick", ary);
+        verify("Quick", ary);
         quickSort(ary);
-        verfiy("Quick", ary);
+        verify("Quick", ary);
 
 
 
@@ -64,7 +64,7 @@ class Sorts {
     	System.out.println("Test time: " + (end - begin));
     }
 
-    private static void verfiy(String sortName, int[] ary) {
+    private static void verify(String sortName, int[] ary) {
         if(sorted(ary)){
             System.out.println(sortName + " sorted successfully");
         } else {
@@ -266,5 +266,13 @@ class Sorts {
             }
         }
         return max;
+    }
+
+    private static String statusBar(String title, int test, int numTests){
+        return "Not Implemented";
+    }
+
+    private static String progBar(int num, int max){
+        return "Not Implemented";
     }
 }
