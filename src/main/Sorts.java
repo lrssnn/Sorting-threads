@@ -21,42 +21,47 @@ class Sorts {
 
     	long begin = System.currentTimeMillis();
 
-        int[] src = getRandomArray(maxLength);
-        int[] ary = new int[src.length];
+        for(int i = 0; i < 100; i++){
+            System.out.println(statusBar("Whatever", i, 100));
 
-        if(sorted(src)){
-            System.out.println("Array is already sorted!");
+            //Thread.sleep(200);
         }
-
-        System.arraycopy(src, 0, ary, 0, src.length);
-        verify("Bubble", ary);
-        bubbleSort(ary);
-        verify("Bubble", ary);
-
-        System.arraycopy(src, 0, ary, 0, src.length);
-        verify("Select", ary);
-        selectSort(ary);
-        verify("Select", ary);
-
-        System.arraycopy(src, 0, ary, 0, src.length);
-        verify("Comb", ary);
-        combSort(ary);
-        verify("Comb", ary);
-
-        System.arraycopy(src, 0, ary, 0, src.length);
-        verify("Counting", ary);
-        countingSort(ary);
-        verify("Counting", ary);
-
-        System.arraycopy(src, 0, ary, 0, src.length);
-        verify("Merge", ary);
-        mergeSort(ary);
-        verify("Merge", ary);
-
-        System.arraycopy(src, 0, ary, 0, src.length);
-        verify("Quick", ary);
-        quickSort(ary);
-        verify("Quick", ary);
+//        int[] src = getRandomArray(maxLength);
+//        int[] ary = new int[src.length];
+//
+//        if(sorted(src)){
+//            System.out.println("Array is already sorted!");
+//        }
+//
+//        System.arraycopy(src, 0, ary, 0, src.length);
+//        verify("Bubble", ary);
+//        bubbleSort(ary);
+//        verify("Bubble", ary);
+//
+//        System.arraycopy(src, 0, ary, 0, src.length);
+//        verify("Select", ary);
+//        selectSort(ary);
+//        verify("Select", ary);
+//
+//        System.arraycopy(src, 0, ary, 0, src.length);
+//        verify("Comb", ary);
+//        combSort(ary);
+//        verify("Comb", ary);
+//
+//        System.arraycopy(src, 0, ary, 0, src.length);
+//        verify("Counting", ary);
+//        countingSort(ary);
+//        verify("Counting", ary);
+//
+//        System.arraycopy(src, 0, ary, 0, src.length);
+//        verify("Merge", ary);
+//        mergeSort(ary);
+//        verify("Merge", ary);
+//
+//        System.arraycopy(src, 0, ary, 0, src.length);
+//        verify("Quick", ary);
+//        quickSort(ary);
+//        verify("Quick", ary);
 
 
 
@@ -269,10 +274,23 @@ class Sorts {
     }
 
     private static String statusBar(String title, int test, int numTests){
-        return "Not Implemented";
+        String bar = progBar(test, numTests);
+        return title + "\t |  " + test + "\t / " + numTests + "\t " + bar;
     }
 
     private static String progBar(int num, int max){
-        return "Not Implemented";
+        final int BAR_LENGTH = 100;
+        int percent = (int)(num*100/(float)max);
+
+        StringBuilder bar = new StringBuilder(BAR_LENGTH + 3);
+        bar.append('|');
+
+        for(int i = 0; i < BAR_LENGTH; i++){
+            bar.append( i*100/BAR_LENGTH <= percent ? '#' : '-');
+        }
+
+        bar.append('|');
+        bar.append(percent).append("%");
+        return bar.toString();
     }
 }
