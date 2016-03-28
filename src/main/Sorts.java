@@ -16,57 +16,110 @@ class Sorts {
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
     	int maxLength 	= 30000;
-    	int increment 	= 200000;
+    	int increment 	= 100;
     	int average		= 1;
 
+        int numTests = (maxLength/increment)*average;
+
+        long start = System.currentTimeMillis();
     	long begin = System.currentTimeMillis();
 
-        for(int i = 0; i < 100; i++){
-            System.out.println(statusBar("Whatever", i, 100));
-
-            //Thread.sleep(200);
+        for (int i = increment; i < maxLength; i += increment) {
+            for(int j = 0; j < average; j++){
+                int[] ary = getRandomArray(i);
+                bubbleSort(ary);
+                System.out.print("\r" +
+                        statusBar(  "Bubble",
+                                    (i - 1)*average + j,
+                                    maxLength));
+            }
         }
-//        int[] src = getRandomArray(maxLength);
-//        int[] ary = new int[src.length];
-//
-//        if(sorted(src)){
-//            System.out.println("Array is already sorted!");
-//        }
-//
-//        System.arraycopy(src, 0, ary, 0, src.length);
-//        verify("Bubble", ary);
-//        bubbleSort(ary);
-//        verify("Bubble", ary);
-//
-//        System.arraycopy(src, 0, ary, 0, src.length);
-//        verify("Select", ary);
-//        selectSort(ary);
-//        verify("Select", ary);
-//
-//        System.arraycopy(src, 0, ary, 0, src.length);
-//        verify("Comb", ary);
-//        combSort(ary);
-//        verify("Comb", ary);
-//
-//        System.arraycopy(src, 0, ary, 0, src.length);
-//        verify("Counting", ary);
-//        countingSort(ary);
-//        verify("Counting", ary);
-//
-//        System.arraycopy(src, 0, ary, 0, src.length);
-//        verify("Merge", ary);
-//        mergeSort(ary);
-//        verify("Merge", ary);
-//
-//        System.arraycopy(src, 0, ary, 0, src.length);
-//        verify("Quick", ary);
-//        quickSort(ary);
-//        verify("Quick", ary);
 
+        long end = System.currentTimeMillis();
+        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
 
+        begin = System.currentTimeMillis();
 
-    	long end = System.currentTimeMillis();
-    	System.out.println("Test time: " + (end - begin));
+        for (int i = increment; i < maxLength; i += increment) {
+            for(int j = 0; j < average; j++){
+                int[] ary = getRandomArray(i);
+                selectSort(ary);
+                System.out.print("\r" +
+                        statusBar(  "Select",
+                                (i - 1)*average + j,
+                                maxLength));
+            }
+        }
+
+        end = System.currentTimeMillis();
+        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
+
+        begin = System.currentTimeMillis();
+
+        for (int i = increment; i < maxLength; i += increment) {
+            for(int j = 0; j < average; j++){
+                int[] ary = getRandomArray(i);
+                mergeSort(ary);
+                System.out.print("\r" +
+                        statusBar(  "Merge",
+                                (i - 1)*average + j,
+                                maxLength));
+            }
+        }
+
+        end = System.currentTimeMillis();
+        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
+
+        begin = System.currentTimeMillis();
+
+        for (int i = increment; i < maxLength; i += increment) {
+            for(int j = 0; j < average; j++){
+                int[] ary = getRandomArray(i);
+                quickSort(ary);
+                System.out.print("\r" +
+                        statusBar(  "Quick",
+                                (i - 1)*average + j,
+                                maxLength));
+            }
+        }
+
+        end = System.currentTimeMillis();
+        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
+
+        begin = System.currentTimeMillis();
+
+        for (int i = increment; i < maxLength; i += increment) {
+            for(int j = 0; j < average; j++){
+                int[] ary = getRandomArray(i);
+                combSort(ary);
+                System.out.print("\r" +
+                        statusBar(  "Comb",
+                                (i - 1)*average + j,
+                                maxLength));
+            }
+        }
+
+        end = System.currentTimeMillis();
+        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
+
+        begin = System.currentTimeMillis();
+
+        for (int i = increment; i < maxLength; i += increment) {
+            for(int j = 0; j < average; j++){
+                int[] ary = getRandomArray(i);
+                countingSort(ary);
+                System.out.print("\r" +
+                        statusBar(  "Count",
+                                (i - 1)*average + j,
+                                maxLength));
+            }
+        }
+
+        end = System.currentTimeMillis();
+        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
+
+    	long finish = System.currentTimeMillis();
+    	System.out.println("Test time: " + (finish - start));
     }
 
     private static void verify(String sortName, int[] ary) {
@@ -279,7 +332,7 @@ class Sorts {
     }
 
     private static String progBar(int num, int max){
-        final int BAR_LENGTH = 100;
+        final int BAR_LENGTH = 80;
         int percent = (int)(num*100/(float)max);
 
         StringBuilder bar = new StringBuilder(BAR_LENGTH + 3);
