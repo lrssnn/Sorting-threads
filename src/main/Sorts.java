@@ -15,8 +15,8 @@ class Sorts {
 
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     	
-    	int maxLength 	= 30000;
-    	int increment 	= 100;
+    	int maxLength 	= 5000000;
+    	int increment 	= 1000;
     	int average		= 1;
 
         int numTests = (maxLength/increment)*average;
@@ -24,35 +24,35 @@ class Sorts {
         long start = System.currentTimeMillis();
     	long begin = System.currentTimeMillis();
 
-        for (int i = increment; i < maxLength; i += increment) {
-            for(int j = 0; j < average; j++){
-                int[] ary = getRandomArray(i);
-                bubbleSort(ary);
-                System.out.print("\r" +
-                        statusBar(  "Bubble",
-                                    (i - 1)*average + j,
-                                    maxLength));
-            }
-        }
+//        for (int i = increment; i < maxLength; i += increment) {
+//            for(int j = 0; j < average; j++){
+//                int[] ary = getRandomArray(i);
+//                bubbleSort(ary);
+//                System.out.print("\r" +
+//                        statusBar(  "Bubble",
+//                                    (i - 1)*average + j,
+//                                    maxLength));
+//            }
+//        }
 
         long end = System.currentTimeMillis();
-        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
+        //System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
 
         begin = System.currentTimeMillis();
 
-        for (int i = increment; i < maxLength; i += increment) {
-            for(int j = 0; j < average; j++){
-                int[] ary = getRandomArray(i);
-                selectSort(ary);
-                System.out.print("\r" +
-                        statusBar(  "Select",
-                                (i - 1)*average + j,
-                                maxLength));
-            }
-        }
+//        for (int i = increment; i < maxLength; i += increment) {
+//            for(int j = 0; j < average; j++){
+//                int[] ary = getRandomArray(i);
+//                selectSort(ary);
+//                System.out.print("\r" +
+//                        statusBar(  "Select",
+//                                (i - 1)*average + j,
+//                                maxLength));
+//            }
+//        }
 
         end = System.currentTimeMillis();
-        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
+//        System.out.print(" " + (begin - end)/1000.0 + " seconds.\n");
 
         begin = System.currentTimeMillis();
 
